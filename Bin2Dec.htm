@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <center>
+        <br><br>
+        <p>Insert a binary sequence (max. 8 characters)</p>
+        <br>
+        <input id="input">
+        <br><br>
+        <button onclick="buttonPressed()">Translate to decimal</button>
+        <br><br>
+        <p id="output"></p>
+    </center>
+
+    <script>
+
+        function buttonPressed(){
+
+            let input = document.getElementById("input").value.trim();
+            let inputBin = " " + input
+            let i
+            let length = inputBin.length;
+            let tempChar
+            let tot=0
+            let pos=0
+
+            if(input === "" || input === "0"){
+                document.getElementById("output").innerHTML="Error: number is missing or 0. Try again"
+                return 0;
+            }
+            if(length>9){
+                document.getElementById("output").innerHTML="Error: more than 8 characters. Try again"
+                return 0;
+            }
+
+            console.log("inputBin:", inputBin);
+            for(i=length-1; i>0; i--){
+                tempChar = parseInt(inputBin[i])
+                console.log("tempChar:", tempChar);
+                if(isNaN(tempChar) || tempChar!=0 && tempChar!=1){
+                    document.getElementById("output").innerHTML="Error: some characters aren't 0 or 1. Try again"
+                    return 0;
+                }
+                tot += (tempChar * Math.pow(2, pos))
+                pos++
+            }
+            document.getElementById("output").innerHTML="The number is translated into " + tot
+            return 0;
+        }
+
+    </script>
+</body>
+</html>
