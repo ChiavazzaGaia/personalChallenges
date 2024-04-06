@@ -1,0 +1,79 @@
+<!-- Creates a box, which corners can be modified using 8 numeric inputs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box1{
+            border-radius: 30px;
+            width: 300px;
+            height: 300px;
+            border: black solid 10px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div id="box1">
+
+        </div><br><br><br>
+        <input type="range" id="inputTopLeftHorizontal" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputTopLeftVertical" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputTopRightHorizontal" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputTopRightVertical" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputBottomLeftHorizontal" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputBottomLeftVertical" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputBottomRightHorizontal" min="0" max="1000" value="300"><br><br>
+        <input type="range" id="inputBottomRightVertical" min="0" max="1000" value="300"><br><br>
+        
+        
+        <p>Values=</p><br>
+        <p id="values"></p>
+    </center>
+    <script>
+
+        const divElement = document.getElementById("box1")
+        const inputs = [
+        document.getElementById("inputTopLeftHorizontal"),
+        document.getElementById("inputTopLeftVertical"),
+        document.getElementById("inputTopRightHorizontal"),
+        document.getElementById("inputTopRightVertical"),
+        document.getElementById("inputBottomLeftHorizontal"),
+        document.getElementById("inputBottomLeftVertical"),
+        document.getElementById("inputBottomRightHorizontal"),
+        document.getElementById("inputBottomRightVertical")
+        ];
+
+        inputs.forEach(input => {
+            input.addEventListener("input", function(){
+                updateBorderRadius();
+            });
+        });
+
+        function updateBorderRadius(){
+            const topLeftHorizontal = document.getElementById("inputTopLeftHorizontal").value || 0;
+            const topLeftVertical = document.getElementById("inputTopLeftVertical").value || 0;
+            const topRightHorizontal = document.getElementById("inputTopRightHorizontal").value || 0;
+            const topRightVertical = document.getElementById("inputTopRightVertical").value || 0;
+            const bottomLeftHorizontal = document.getElementById("inputBottomLeftHorizontal").value || 0;
+            const bottomLeftVertical = document.getElementById("inputBottomLeftVertical").value || 0;
+            const bottomRightHorizontal = document.getElementById("inputBottomRightHorizontal").value || 0;
+            const bottomRightVertical = document.getElementById("inputBottomRightVertical").value || 0;
+
+            divElement.style.borderRadius = `${topLeftHorizontal}px ${topRightHorizontal}px ${bottomRightHorizontal}px ${bottomLeftHorizontal}px / ${topLeftVertical}px ${topRightVertical}px ${bottomRightVertical}px ${bottomLeftVertical}px`;
+            
+            document.getElementById("values").innerHTML = `Top left (horizontal) = ${topLeftHorizontal}px<br>
+                                                Top left (vertical) = ${topLeftVertical}px<br>
+                                                Top right (horizontal) = ${topRightHorizontal}px<br>
+                                                Top right (vertical) = ${topRightVertical}px<br>
+                                                Bottom left (horizontal) = ${bottomLeftHorizontal}px<br>
+                                                Bottom left (vertical) = ${bottomLeftVertical}px<br>
+                                                Bottom right (horizontal) = ${bottomRightHorizontal}px<br>
+                                                Bottom right (vertical) = ${bottomRightVertical}px`;
+        }
+    </script>
+</body>
+  <!-- Gaia Chiavazza 06/04/2024 15:26 -->
+</html>
