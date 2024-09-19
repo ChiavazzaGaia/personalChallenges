@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>title</title>
+    <style>
+        body
+        {
+            background-color: wheat;
+        }
+        #buttonTest {  /* Button CSS done by Chat GPT */
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            position: absolute;
+            left:835px;
+        }
+        #buttonClear {  /* Button CSS done by Chat GPT */
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            position: absolute;
+            left:945px;
+        }
+    </style>
+</head>
+<body onload="startFunction()">
+
+    <div id="main"></div>
+    <button onclick="buttonPressed()" id="buttonTest">Start/stop</button>
+    <button onclick="clearAll()" id="buttonClear">Clear all</button>
+
+<script>
+
+    var cubesArray = [];
+    var isAliveArray = [];
+    var tickInterval;
+    var isIntervalOn = false;
+
+    function startFunction()      //Starts all needed functions (from body onload)
+    {
+        generateCubes();
+        spawnRandomLifes();
+    }
+
+    function buttonPressed()
+    {
+        if(!isIntervalOn)
+        {
+            tickInterval = setInterval(executeGameTick, 100);
+            isIntervalOn = true;
+        }else
+        {
+            clearInterval(tickInterval);
+            isIntervalOn = false;
+        }
+    }
+
+    function executeGameTick()
+    {
+        checkAroundTiles();
+        changeAliveDead();
+    }
+
+    function changeAliveDead()     //When needed, switches the alive/death (black/white)
+    {
+        for(i=0; i<2500; i++)
+        {
+            if(isAliveArray[i] == true)
+            {
+                cubesArray[i].style.background = "black";
+            }else if(isAliveArray[i] == false)
+            {
+                cubesArray[i].style.background = "white";
+            }
+        }
+    }
+
+    function checkAroundTiles()   //Checks how many of the around tiles are alive and puts said value in the support array. Matrix would be faster, but I can't do those (yet)
+    {
+        for(i=0; i<2500; i++)
+        {
+            var aliveAroundAmount=0;
+
+            if(i>0 && cubesArray[i-1].style.background == "black")      //Checks right side
+            {
+                aliveAroundAmount++;
+            }
+            if(i < 2449 && i - 49 > 0 && cubesArray[i - 49].style.background == "black")      //Checks top-right side
+            {
+                aliveAroundAmount++;
+            }
+            if(i < 2449 && i - 51 > 0 && cubesArray[i - 51].style.background == "black")      //Checks top-left side
+            {
+                aliveAroundAmount++;
+            }
+            if(i < 2449 && i - 50 > 0 && cubesArray[i - 50].style.background == "black")      //Checks top side
+            {
+                aliveAroundAmount++;
+            }
+            if(i<2499 && cubesArray[i+1].style.background == "black")      //Checks left side
+            {
+                aliveAroundAmount++;
+            }
+            if(i > 52 && i + 51 < cubesArray.length && cubesArray[i + 51].style.background == "black")      //Checks bottom-right side
+            {
+                aliveAroundAmount++;
+            }
+            if(i > 50 && i + 49 < cubesArray.length && cubesArray[i + 49].style.background == "black")      //Checks bottom-left side
+            {
+                aliveAroundAmount++;
+            }
+            if(i > 51 && i + 50 < cubesArray.length && cubesArray[i + 50].style.background == "black")      //Checks bottom side
+            {
+                aliveAroundAmount++;
+            }
+            if(aliveAroundAmount<2 || aliveAroundAmount>3)    //Switches alive/dead (black/white) if needed. 2 isn't checked as the color stays the same either way
+            {
+                isAliveArray[i] = false;
+            }else if(aliveAroundAmount == 3)
+            {
+                isAliveArray[i] = true;
+            }
+        }
+    }
+
+    function spawnRandomLifes()        //Randomly creates some alive squares
+    {
+        for(i=0; i<2500; i++)
+        {
+            if(Math.random()>0.9)
+            {
+                cubesArray[i].style.background = "black"
+            }
+        }
+    }
+
+    function generateCubes()              //Generates all the 2500 cubes (TODO: 2500 not floating number)
+    {
+        const leftDist = 540;        //For easier changing
+        const topDist = 80;
+        var leftDistance=leftDist;
+        var topDistance=topDist;
+
+        for(let i=1; i<=2500; i++)   //Let makes sure there's a different i for every cube (needed for the click)
+        {
+            var cube = document.createElement("div");   //Create the cube
+            cube.style.width = "13px";
+            cube.style.height = "13px";
+            cube.style.background = "white";
+            cube.style.margin = "2px";
+            cube.style.position = "absolute";
+
+            cubesArray.push(cube);  //Add it to the array
+
+            document.getElementById("main").appendChild(cube);
+            leftDistance += 16;
+            cube.style.left = leftDistance + "px";
+            cube.style.top = topDistance + "px";
+
+            cube.addEventListener('click', function(){
+                changeColorOnClick(i-1)
+            });
+
+            if(i%50==0)      //Go to the next line when it's a multiple of 50
+            {
+                topDistance += 16;
+                leftDistance = leftDist;
+            }
+        }
+    }
+
+    function changeColorOnClick(i)   //Changes the cube color when clicked
+    {
+        if(cubesArray[i].style.background == "white")
+        {
+            cubesArray[i].style.background = "black";
+        }else{
+            cubesArray[i].style.background = "white";
+        }
+
+    }
+
+    function clearAll()     //Makes all the cubes white
+    {
+        for(i=0; i<2500; i++)
+        {
+            cubesArray[i].style.background = "white";
+        }
+    }
+</script>
+</body>
+</html>
