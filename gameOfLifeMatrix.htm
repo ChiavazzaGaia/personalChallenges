@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>title</title>
+    <style>
+        body
+        {
+            background-color: wheat;
+        }
+        #buttonTest {  /* Button CSS done by Chat GPT */
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            position: absolute;
+            left:835px;
+        }
+        #buttonClear {  /* Button CSS done by Chat GPT */
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            position: absolute;
+            left:945px;
+        }
+    </style>
+</head>
+<body onload="startFunction()">
+
+    <div id="main"></div>
+    <button onclick="buttonPressed()" id="buttonTest">Start/stop</button>
+    <button onclick="clearAll()" id="buttonClear">Clear all</button>
+
+<script>
+
+    console.log("For single tick: executeGameTick()\nFor all statuses: printAllStatus()\nMore cubes: spawnRandomLifes()")
+    var cubesMatrix = [];
+    var isAliveMatrix = [];
+    var tickInterval;
+    var isIntervalOn = false;
+
+    function startFunction()      //Starts all needed functions (from body onload)
+    {
+        generateCubes();
+        spawnRandomLifes();
+    }
+
+    function buttonPressed()
+    {
+        if(!isIntervalOn)
+        {
+            tickInterval = setInterval(executeGameTick, 100);
+            isIntervalOn = true;
+        }else
+        {
+            clearInterval(tickInterval);
+            isIntervalOn = false;
+        }
+    }
+
+    function executeGameTick()
+    {
+        //console.log("AUTOCHECK")
+        checkAroundTiles();
+        //console.log("AUTOCHANGE")
+        changeAliveDead();
+    }
+
+    function changeAliveDead()     //When needed, switches the alive/death (black/white)
+    {
+        var j=0;
+        for(i=0; j<49; i++)
+        {
+            if(isAliveMatrix[j][i] == true)
+            {
+                cubesMatrix[j][i].style.background = "black";
+                //console.log(i+" was turned black | array= "+isAliveArray[i])
+            }else if(isAliveMatrix[j][i] == false)
+            {
+                cubesMatrix[j][i].style.background = "white";
+                //console.log(i+" was turned white | array= "+isAliveArray[i])
+            }
+            if(i>=49)
+            {
+                j++;
+                i=-1;
+            }
+        }
+        //console.log("!!!ALL DONE!!!")
+    }
+    
+    function checkAroundTiles() {
+        for (let j = 0; j < 50; j++) {      //Iterate through rows
+            for (let i = 0; i < 50; i++) {           //Iterate through columns
+                let aliveAroundAmount = 0;
+
+                // Check left
+                if (i > 0 && cubesMatrix[j][i - 1].style.background == "black") 
+                    aliveAroundAmount++;
+                // Check top-right
+                if (j > 0 && i < 49 && cubesMatrix[j - 1][i + 1].style.background == "black") 
+                    aliveAroundAmount++;
+                // Check top-left
+                if (j > 0 && i > 0 && cubesMatrix[j - 1][i - 1].style.background == "black") 
+                    aliveAroundAmount++;
+                // Check top
+                if (j > 0 && cubesMatrix[j - 1][i].style.background == "black") 
+                    aliveAroundAmount++;
+                // Check right
+                if (i < 49 && cubesMatrix[j][i + 1].style.background == "black") 
+                    aliveAroundAmount++;
+                // Check bottom-right
+                if (j < 49 && i < 49 && cubesMatrix[j + 1][i + 1].style.background == "black")
+                    aliveAroundAmount++;
+                // Check bottom-left
+                if (j < 49 && i > 0 && cubesMatrix[j + 1][i - 1].style.background == "black") 
+                    aliveAroundAmount++;
+                // Check bottom
+                if (j < 49 && cubesMatrix[j + 1][i].style.background == "black") 
+                    aliveAroundAmount++;
+
+                // Update the matrix based on the alive count
+                if (aliveAroundAmount < 2 || aliveAroundAmount > 3) {
+                    isAliveMatrix[j][i] = false;
+                } else if (aliveAroundAmount === 3) {
+                    isAliveMatrix[j][i] = true;
+                }
+            }
+        }      
+    }
+
+    function spawnRandomLifes()        //Randomly creates some alive squares
+    {
+        var j=0;
+        for(i=0; j<50; i++)
+        {
+            if(Math.random()>0.9)
+            {
+                cubesMatrix[j][i].style.background = "black"
+                isAliveMatrix[j][i] = true;
+            }
+            if(i>=49)
+            {
+                j++;
+                i=-1;
+            }
+        }
+    }
+
+    function generateCubes()              //Generates all the 2500 cubes (TODO: 2500 not floating number)
+    {
+        const leftDist = 540;        //For easier changing
+        const topDist = 80;
+        var totalCubes = 0;
+        var j = 0;
+        var leftDistance=leftDist;
+        var topDistance=topDist;
+        isAliveMatrix.push([])
+        cubesMatrix.push([])   //Adds an empty row
+
+        for(let i=1; totalCubes<2500; i++)   //Let makes sure there's a different i for every cube (needed for the click)
+        {
+            
+            let rowAmount = j;
+            totalCubes++;
+
+            var cube = document.createElement("div");   //Create the cube
+            cube.style.width = "13px";
+            cube.style.height = "13px";
+            cube.style.background = "white";
+            cube.style.margin = "2px";
+            cube.style.position = "absolute";
+            cube.style.fontSize = "10px";
+
+            //cube.textContent = i-1;       //Numbers on them (for debugging)
+
+            isAliveMatrix[j][i-1] = false;
+            cubesMatrix[j][i-1] = cube;  //Add it to the matrix
+
+            document.getElementById("main").appendChild(cube);
+            leftDistance += 16;
+            cube.style.left = leftDistance + "px";
+            cube.style.top = topDistance + "px";
+
+            if(i>49)                           //Wonky manual fix, otherwise the 49 column wouldn't work
+            {
+                cube.addEventListener('click', function(){
+                    changeColorOnClick(49, rowAmount)
+                });
+            }else{
+                cube.addEventListener('click', function(){
+                    changeColorOnClick(i-1, rowAmount)
+                });
+            }
+
+            if(i%50==0)      //Go to the next line when it's a multiple of 50
+            {
+                isAliveMatrix.push([])
+                cubesMatrix.push([])
+                j++;
+                i=0;
+                topDistance += 16;
+                leftDistance = leftDist;
+            }
+        }
+    }
+
+    function changeColorOnClick(i, j)   //Changes the cube color when clicked
+    {
+        if(isAliveMatrix[j][i] == false)
+        {
+            cubesMatrix[j][i].style.background = "black";
+            isAliveMatrix[j][i] = true;
+        }else{
+            cubesMatrix[j][i].style.background = "white";
+            isAliveMatrix[j][i] = false;
+        }
+
+    }
+
+    function clearAll()     //Makes all the cubes white
+    {
+        for (let j = 0; j < 50; j++) {
+            for (let i = 0; i < 50; i++) {
+                cubesMatrix[j][i].style.background = "white";
+                isAliveMatrix[j][i] = false;
+            }
+        }
+    }
+
+    function printAllStatus()   //Changes the cube color when clicked
+    {
+        var j=0;
+        for (let j = 0; j < 50; j++) {
+            for (let i = 0; i < 50; i++) {
+                console.log("["+j+"]"+"["+i+"] = "+isAliveMatrix[j][i])
+                if(i>=49)
+                {
+                    j++;
+                    i=-1;
+                }
+            }
+        }
+    }
+
+</script>
+</body>
+</html>
