@@ -44,6 +44,7 @@
 
 <script>
 
+    console.log("For single tick: executeGameTick()")
     var cubesArray = [];
     var isAliveArray = [];
     var tickInterval;
@@ -70,7 +71,9 @@
 
     function executeGameTick()
     {
+        //console.log("AUTOCHECK")
         checkAroundTiles();
+        //console.log("AUTOCHANGE")
         changeAliveDead();
     }
 
@@ -81,11 +84,14 @@
             if(isAliveArray[i] == true)
             {
                 cubesArray[i].style.background = "black";
+                //console.log(i+" was turned black | array= "+isAliveArray[i])
             }else if(isAliveArray[i] == false)
             {
                 cubesArray[i].style.background = "white";
+                //console.log(i+" was turned white | array= "+isAliveArray[i])
             }
         }
+        //console.log("!!!ALL DONE!!!")
     }
 
     function checkAroundTiles()   //Checks how many of the around tiles are alive and puts said value in the support array. Matrix would be faster, but I can't do those (yet)
@@ -94,45 +100,62 @@
         {
             var aliveAroundAmount=0;
 
-            if(i>0 && cubesArray[i-1].style.background == "black")      //Checks right side
+            if(i>0 && cubesArray[i-1].style.background == "black")      //Checks left side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Left is alive")
             }
             if(i < 2449 && i - 49 > 0 && cubesArray[i - 49].style.background == "black")      //Checks top-right side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Top-right is alive")
             }
             if(i < 2449 && i - 51 > 0 && cubesArray[i - 51].style.background == "black")      //Checks top-left side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Top-left is alive")
             }
             if(i < 2449 && i - 50 > 0 && cubesArray[i - 50].style.background == "black")      //Checks top side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Top is alive")
             }
-            if(i<2499 && cubesArray[i+1].style.background == "black")      //Checks left side
+            if(i<2499 && cubesArray[i+1].style.background == "black")      //Checks right side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Left is alive")
             }
             if(i > 52 && i + 51 < cubesArray.length && cubesArray[i + 51].style.background == "black")      //Checks bottom-right side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Bottom-right is alive")
             }
             if(i > 50 && i + 49 < cubesArray.length && cubesArray[i + 49].style.background == "black")      //Checks bottom-left side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Bottom-left is alive")
             }
             if(i > 51 && i + 50 < cubesArray.length && cubesArray[i + 50].style.background == "black")      //Checks bottom side
             {
                 aliveAroundAmount++;
+                //console.log(i+"   Bottom is alive")
             }
             if(aliveAroundAmount<2 || aliveAroundAmount>3)    //Switches alive/dead (black/white) if needed. 2 isn't checked as the color stays the same either way
             {
                 isAliveArray[i] = false;
+                //console.log("It died :(")
             }else if(aliveAroundAmount == 3)
             {
                 isAliveArray[i] = true;
+                //console.log("It was born :)")
+            }else if(isAliveArray[i] == true && aliveAroundAmount == 2){
+                isAliveArray[i] = true;
+                //console.log("It was 2 with black before")
+            }else if(isAliveArray[i] == false && aliveAroundAmount == 2){
+                isAliveArray[i] = false;
+                //console.log("It was 2 with white before")
             }
+            //console.log(i+"   Total alive around are "+aliveAroundAmount)
         }
     }
 
@@ -162,6 +185,9 @@
             cube.style.background = "white";
             cube.style.margin = "2px";
             cube.style.position = "absolute";
+            cube.style.fontSize = "10px";
+
+            //cube.textContent = i-1;       //Numbers on them (for debugging)
 
             cubesArray.push(cube);  //Add it to the array
 
@@ -187,8 +213,10 @@
         if(cubesArray[i].style.background == "white")
         {
             cubesArray[i].style.background = "black";
+            isAliveArray[i] = true;
         }else{
             cubesArray[i].style.background = "white";
+            isAliveArray[i] = false;
         }
 
     }
@@ -198,6 +226,7 @@
         for(i=0; i<2500; i++)
         {
             cubesArray[i].style.background = "white";
+            isAliveArray[i] = false;
         }
     }
 </script>
