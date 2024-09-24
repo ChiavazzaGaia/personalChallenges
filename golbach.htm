@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <input id="inputID" placeholder="How many numbers?">
+    <button onclick="startProgram()">aaaaa</button>
+
+    <script>
+        console.log("startProgram()")
+
+        function startProgram(){
+
+            num = document.getElementById("inputID").value;
+            for(var i=0; i<num; i++)
+            {
+                if(i>2 && i%2==0)
+                {
+                    var temp1 = 0;
+                    var temp2 = 0;
+                    do{
+                        for(var j=0; j<temp1; j++)
+                        {
+                            if(isPrime(temp1)==true && isPrime(temp2)==true && temp1 + temp2 == i)
+                            { 
+                                console.log(i + " = " + temp1 + " + " + temp2);
+                                temp1=i+1;
+                                break;
+                            }
+                        }
+                        temp2++;
+                        if(temp2>i)
+                        {
+                            temp2=0;
+                            temp1++;
+                        }
+                    }while(temp1<i);
+                }
+            }
+        }
+
+        function isPrime(num) {
+            if (num <= 1) return false; // numbers less than 2 are not prime
+            if (num === 2) return true; // 2 is the only even prime number
+            if (num % 2 === 0) return false; // eliminate even numbers
+
+            for (let i = 3; i <= Math.sqrt(num); i += 2) { // only check odd numbers up to the square root
+            if (num % i === 0) return false;
+        }
+    
+        return true;
+        }
+    </script>
+</body>
+</html>
